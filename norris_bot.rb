@@ -9,7 +9,7 @@ end
 
 def authen
   @socket.sendmsg("NICK #{@nick}\r\n",0)
-  @socket.sendmsg("USER rubot * * : rubybottest Test User\r\n",0)
+  @socket.sendmsg("USER botnorris * * : botnorris bot norris\r\n",0)
 end
 
 def send_privmsg input
@@ -62,11 +62,11 @@ end
 def process_line(line)
   join_channel(@channel) if line =~ /MOTD/
   pong(line) if line =~ /PING/
-  norris if line  =~ /!norris/
-  startup if line =~ /!startup/
-  disk_u  if line =~ /!du/
-  vmstat  if line =~ /!vm/
-  top(line) if line =~ /!top \d/
+  top(line)  if line =~ /!top \d/
+  norris     if line =~ /!norris/
+  startup    if line =~ /!startup/
+  disk_u     if line =~ /!du/
+  vmstat     if line =~ /!vm/
 end
 
 def set_options args

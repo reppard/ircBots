@@ -59,14 +59,39 @@ def top(line)
   end
 end
 
+def rollcall
+  send_privmsg("Present!")
+  @socket.sendmsg("NAMES #{@channel}\r\n",0)
+end
+
+def find_bots(line)
+  names = line.gsub(":",'').split(" ").select{ |name| name.downcase =~ /bot/ && !name.match(/#/)}.uniq
+  if names.size > 0
+    send_privmsg("Detected bots: #{names.join(' ')}")
+  end
+end
+
+def print_fortune
+  fort = `curl -s http://www.fortunefortoday.com/getfortuneonly.php`.gsub(/<.*>/,"\n")
+  send_privmsg(fort)
+end
+
+def list_commands
+  send_privmsg("Enter a commands proceeded by a !:  du, vm, top <n>, rollcall, norris, startup, fortune, commands")
+end
+
 def process_line(line)
   join_channel(@channel) if line =~ /MOTD/
-  pong(line) if line =~ /PING/
-  top(line)  if line =~ /!top \d/
-  norris     if line =~ /!norris/
-  startup    if line =~ /!startup/
-  disk_u     if line =~ /!du/
-  vmstat     if line =~ /!vm/
+  pong(line)       if line =~ /PING/
+  top(line)        if line =~ /!top \d/
+  rollcall         if line =~ /!rollcall/
+  norris           if line =~ /!norris/
+  startup          if line =~ /!startup/
+  disk_u           if line =~ /!du/
+  vmstat           if line =~ /!vm/
+  find_bots(line)  if line =~ /353/
+  print_fortune    if line =~ /!fortune/
+  list_commands    if line =~ /!commands/
 end
 
 def set_options args
